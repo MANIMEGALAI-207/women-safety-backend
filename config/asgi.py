@@ -7,8 +7,11 @@ from api.consumers import SOSConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
+# Ithu mukkiyam! Django setup aaganum (AppRegistryNotReady fix)
+django_asgi_app = get_asgi_application()
+
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(
         URLRouter([
             path('ws/sos/', SOSConsumer.as_asgi()),
