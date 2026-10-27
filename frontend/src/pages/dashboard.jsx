@@ -19,36 +19,33 @@ export default function Dashboard() {
     return () => ws.close();
   }, []);
 
-  const handleSOS = () => {
-    setLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        
-        // WebSocket vachu Police-ku alert anuppu
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({
-            type: 'sos_alert',
-            user: 'Test User',
-            lat: latitude,
-            lng: longitude,
-            timestamp: new Date().toISOString(),
-            message: 'Emergency! Need help!'
-          }));
-          setSuccess(true);
-        } else {
-          alert('WebSocket not connected! Please refresh.');
-        }
-        setLoading(false);
-      }, () => {
-        alert('Location permission denied.');
-        setLoading(false);
-      });
-    } else {
-      alert('Location not supported');
+const handleSOS = async () => {
+  setLoading(true);
+  try {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Location permission denied');
       setLoading(false);
+      return;
     }
-  };
+
+    let location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+
+    // Ippo direct-a API call pannuvom (WebSocket venaam)
+    await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+      lat: latitude,
+      lng: longitude,
+    });
+
+    setSuccess(true);
+  } catch (error) {
+    alert('SOS send aagala. Backend check pannunga.');
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6">
