@@ -18,7 +18,6 @@ def sos_list(request):
 @api_view(['POST'])
 def sos_create(request):
     sos = SOSRequest.objects.create(
-        # user_id=1,  <-- Ithu delete pannunga
         lat=request.data.get('lat', 0.0),
         lng=request.data.get('lng', 0.0),
         status='pending'
