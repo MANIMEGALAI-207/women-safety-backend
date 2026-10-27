@@ -1,51 +1,44 @@
 import { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
-import { sosAPI } from '../services/api';
+import axios from 'axios'; // Axios Import
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [socket, setSocket] = useState(null);
 
-  useEffect(() => {
-    // WebSocket connect (Django Channels)
-    const ws = new WebSocket('ws://127.0.0.1:8000/ws/sos/');
+  const handleSOS = async () => {
+    setLoading(true);
     
-    ws.onopen = () => {
-      console.log('✅ WebSocket Connected');
-      setSocket(ws);
-    };
-
-    return () => ws.close();
-  }, []);
-
-const handleSOS = async () => {
-  setLoading(true);
-  try {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Location permission denied');
+    if (!navigator.geolocation) {
+      alert('Geolocation not supported in this browser.');
       setLoading(false);
       return;
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    const { latitude, longitude } = location.coords;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
 
-    // Ippo direct-a API call pannuvom (WebSocket venaam)
-    await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-      lat: latitude,
-      lng: longitude,
-    });
+          // Direct API Call to Render Backend
+          await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+            lat: latitude,
+            lng: longitude,
+          });
 
-    setSuccess(true);
-  } catch (error) {
-    alert('SOS send aagala. Backend check pannunga.');
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
+          setSuccess(true);
+        } catch (error) {
+          console.error(error);
+          alert('SOS send aagala. Backend check pannunga.');
+        } finally {
+          setLoading(false);
+        }
+      },
+      (error) => {
+        alert('Location permission denied or failed.');
+        setLoading(false);
+      }
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6">
