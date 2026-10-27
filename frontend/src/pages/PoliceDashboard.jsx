@@ -44,7 +44,9 @@ export default function PoliceDashboard() {
           {alerts.map((alert) => (
             <div key={alert.id} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
               <h2 className="text-xl font-bold text-gray-800 mb-2">🚨 {alert.user_name || 'User'}</h2>
-              <p className="text-gray-600">📍 Location: {alert.lat}, {alert.lng}</p>
+              <p className="text-gray-600">
+  📍 Location: <a href={`https://maps.google.com/?q=${alert.lat},${alert.lng}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">View on Map</a>
+</p>
               <p className="text-gray-600">⏰ Time: {new Date(alert.created_at).toLocaleTimeString()}</p>
               <button
                 onClick={() => handleResolve(alert.id)}
