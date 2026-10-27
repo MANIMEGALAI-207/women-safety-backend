@@ -6,7 +6,7 @@ export default function PoliceDashboard() {
 
   const fetchAlerts = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/sos/list/');
+      const res = await axios.get('https://women-safety-backend-1-34sx.onrender.com/api/sos/list/');
       setAlerts(res.data);
     } catch (error) {
       console.error("Fetch error:", error);
@@ -22,7 +22,7 @@ export default function PoliceDashboard() {
   const handleResolve = async (id) => {
     console.log("Resolving ID:", id); // Check panna
     try {
-      const res = await axios.patch(`http://127.0.0.1:8000/api/sos/${id}/resolve/`);
+      const res = await axios.patch(`https://women-safety-backend-1-34sx.onrender.com/api/sos/${id}/resolve/`);
       console.log("Resolve response:", res.data);
       fetchAlerts(); // Refresh list
     } catch (error) {
