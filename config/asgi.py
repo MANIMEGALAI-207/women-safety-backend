@@ -8,7 +8,6 @@ from api.consumers import SOSConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
-# Django setup (AppRegistryNotReady fix)
 django.setup()
 
 django_asgi_app = get_asgi_application()
