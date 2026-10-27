@@ -22,7 +22,7 @@ class SOSRequest(models.Model):
         ('pending', 'Pending'),
         ('resolved', 'Resolved'),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # <-- Ithu maathunga
     lat = models.FloatField()
     lng = models.FloatField()
     audio = models.FileField(upload_to='sos_audio/', null=True, blank=True)
@@ -30,4 +30,6 @@ class SOSRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"SOS from {self.user.username} - {self.status}"
+        if self.user:
+            return f"SOS from {self.user.username} - {self.status}"
+        return f"SOS from Unknown - {self.status}"

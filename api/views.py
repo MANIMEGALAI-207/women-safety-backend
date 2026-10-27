@@ -17,20 +17,13 @@ def sos_list(request):
 
 @api_view(['POST'])
 def sos_create(request):
-    """
-    User SOS button click pannumbodhu, ithu call aagum.
-    Location (lat, lng) save pannum.
-    """
     sos = SOSRequest.objects.create(
-        user_id=1,  # Superuser ID (temporary)
+        # user_id=1,  <-- Ithu delete pannunga
         lat=request.data.get('lat', 0.0),
         lng=request.data.get('lng', 0.0),
         status='pending'
     )
-    return Response({
-        'id': sos.id,
-        'message': 'SOS Created Successfully'
-    }, status=201)
+    return Response({'id': sos.id, 'message': 'SOS Created'}, status=201)
 
 
 @api_view(['PATCH'])
