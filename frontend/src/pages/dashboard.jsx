@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showFakeCall, setShowFakeCall] = useState(false);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    // Public folder-la irundhu ringtone load pannu
+    audioRef.current = new Audio('/universfield-ringtone-091-496417.mp3');
+    audioRef.current.loop = true;
+  }, []);
 
   const handleSOS = async () => {
     setLoading(true);
@@ -39,6 +46,25 @@ export default function Dashboard() {
 
   const handleFakeCall = () => {
     setShowFakeCall(true);
+    if (audioRef.current) {
+      audioRef.current.play().catch(err => console.error(err));
+    }
+  };
+
+  const handleDecline = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setShowFakeCall(false);
+  };
+
+  const handleAccept = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setShowFakeCall(false);
   };
 
   return (
@@ -79,13 +105,13 @@ export default function Dashboard() {
             <p className="text-gray-500 mb-8">+91 8973997743</p>
             <div className="flex gap-4 justify-center">
               <button
-                onClick={() => setShowFakeCall(false)}
+                onClick={handleDecline}
                 className="bg-red-500 text-white px-8 py-3 rounded-full font-bold hover:bg-red-600 transition"
               >
                 Decline
               </button>
               <button
-                onClick={() => setShowFakeCall(false)}
+                onClick={handleAccept}
                 className="bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition"
               >
                 Accept
