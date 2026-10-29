@@ -16,11 +16,10 @@ export default function Dashboard() {
   const handleSOS = async () => {
   setLoading(true);
 
-  // 5 seconds timeout (Emergency-ku slow-a irundha, alert kudukkum)
   const timeout = setTimeout(() => {
-    setLoading(false);
-    alert('Network slow-a irukku. Please try again.');
-  }, 5000);
+  setLoading(false);
+  alert('Network slow-a irukku. Please try again.');
+}, 10000);
 
   if (!navigator.geolocation) {
     alert('Geolocation not supported in this browser.');
@@ -51,7 +50,7 @@ export default function Dashboard() {
       alert('Location permission denied or failed. Please enable GPS.');
       setLoading(false);
     },
-    { timeout: 5000 } // 5 seconds la location edukka try pannu
+    { timeout: 10000 } // 5 seconds la location edukka try pannu
   );
 };
 
