@@ -14,35 +14,46 @@ export default function Dashboard() {
   }, []);
 
   const handleSOS = async () => {
-    setLoading(true);
-    if (!navigator.geolocation) {
-      alert('Geolocation not supported in this browser.');
-      setLoading(false);
-      return;
-    }
+  setLoading(true);
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-            lat: latitude,
-            lng: longitude,
-          });
-          setSuccess(true);
-        } catch (error) {
-          console.error(error);
-          alert('SOS send aagala. Backend check pannunga.');
-        } finally {
-          setLoading(false);
-        }
-      },
-      (error) => {
-        alert('Location permission denied or failed.');
+  // 5 seconds timeout (Emergency-ku slow-a irundha, alert kudukkum)
+  const timeout = setTimeout(() => {
+    setLoading(false);
+    alert('Network slow-a irukku. Please try again.');
+  }, 5000);
+
+  if (!navigator.geolocation) {
+    alert('Geolocation not supported in this browser.');
+    clearTimeout(timeout);
+    setLoading(false);
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      clearTimeout(timeout);  // Success aana timeout clear pannu
+      try {
+        const { latitude, longitude } = position.coords;
+        await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+          lat: latitude,
+          lng: longitude,
+        });
+        setSuccess(true);
+      } catch (error) {
+        console.error(error);
+        alert('SOS send aagala. Backend check pannunga.');
+      } finally {
         setLoading(false);
       }
-    );
-  };
+    },
+    (error) => {
+      clearTimeout(timeout);  // Error aana timeout clear pannu
+      alert('Location permission denied or failed. Please enable GPS.');
+      setLoading(false);
+    },
+    { timeout: 5000 } // 5 seconds la location edukka try pannu
+  );
+};
 
   const handleFakeCall = () => {
     setShowFakeCall(true);
