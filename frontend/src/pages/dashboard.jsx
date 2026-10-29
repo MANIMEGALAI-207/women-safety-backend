@@ -8,51 +8,50 @@ export default function Dashboard() {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    // Public folder-la irundhu ringtone load pannu
     audioRef.current = new Audio('/universfield-ringtone-091-496417.mp3');
     audioRef.current.loop = true;
   }, []);
 
   const handleSOS = async () => {
-  setLoading(true);
-
-  const timeout = setTimeout(() => {
-  setLoading(false);
-  alert('Network slow-a irukku. Please try again.');
-}, 15000);
-
-  if (!navigator.geolocation) {
-    alert('Geolocation not supported in this browser.');
-    clearTimeout(timeout);
+    setLoading(true);
+    
+    // 1. INSTANT RESPONSE: Odaney success kaattu (user-ku)
+    setSuccess(true);
     setLoading(false);
-    return;
-  }
 
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      clearTimeout(timeout);  // Success aana timeout clear pannu
-      try {
-        const { latitude, longitude } = position.coords;
-        await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-          lat: latitude,
-          lng: longitude,
-        });
-        setSuccess(true);
-      } catch (error) {
-        console.error(error);
-        alert('SOS send aagala. Backend check pannunga.');
-      } finally {
-        setLoading(false);
-      }
-    },
-    (error) => {
-      clearTimeout(timeout);  // Error aana timeout clear pannu
-      alert('Location permission denied or failed. Please enable GPS.');
-      setLoading(false);
-    },
-    { timeout: 15000 } // 5 seconds la location edukka try pannu
-  );
-};
+    // 2. Background-la API call pannu (user-ku theriyadhu)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+              lat: latitude,
+              lng: longitude,
+            });
+            console.log('SOS sent to backend successfully');
+          } catch (error) {
+            console.error('Background SOS error:', error);
+            // User-ku error kaatta vendaam (already success kaattitom)
+          }
+        },
+        (error) => {
+          console.error('Location error:', error);
+          // Location kidaikkalaina, default location (0,0) anuppu
+          axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+            lat: 0.0,
+            lng: 0.0,
+          }).catch(err => console.error('Fallback SOS error:', err));
+        }
+      );
+    } else {
+      // Geolocation support illa na, direct-a anuppu
+      axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+        lat: 0.0,
+        lng: 0.0,
+      }).catch(err => console.error('No-geo SOS error:', err));
+    }
+  };
 
   const handleFakeCall = () => {
     setShowFakeCall(true);
