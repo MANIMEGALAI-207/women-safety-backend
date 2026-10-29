@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios'; // Axios Import
+import { useState } from 'react';
+import axios from 'axios';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showFakeCall, setShowFakeCall] = useState(false);
 
   const handleSOS = async () => {
     setLoading(true);
-    
     if (!navigator.geolocation) {
       alert('Geolocation not supported in this browser.');
       setLoading(false);
@@ -18,13 +18,10 @@ export default function Dashboard() {
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-
-          // Direct API Call to Render Backend
           await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
             lat: latitude,
             lng: longitude,
           });
-
           setSuccess(true);
         } catch (error) {
           console.error(error);
@@ -40,8 +37,12 @@ export default function Dashboard() {
     );
   };
 
+  const handleFakeCall = () => {
+    setShowFakeCall(true);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6 relative">
       <h1 className="text-4xl font-bold text-purple-700 mb-2">🚨 Women Safety</h1>
       <p className="text-gray-600 mb-8">Press the SOS button in case of emergency</p>
       
@@ -51,13 +52,47 @@ export default function Dashboard() {
           <p className="text-gray-600">Police will arrive soon.</p>
         </div>
       ) : (
-        <button
-          onClick={handleSOS}
-          disabled={loading}
-          className="w-64 h-64 rounded-full bg-red-600 text-white text-4xl font-bold shadow-2xl hover:bg-red-700 transition disabled:opacity-50 animate-pulse"
-        >
-          {loading ? 'Sending...' : 'SOS'}
-        </button>
+        <div className="flex flex-col items-center">
+          <button
+            onClick={handleSOS}
+            disabled={loading}
+            className="w-64 h-64 rounded-full bg-red-600 text-white text-4xl font-bold shadow-2xl hover:bg-red-700 transition disabled:opacity-50 animate-pulse"
+          >
+            {loading ? 'Sending...' : 'SOS'}
+          </button>
+
+          <button
+            onClick={handleFakeCall}
+            className="mt-8 bg-purple-600 text-white px-10 py-3 rounded-xl font-bold text-lg hover:bg-purple-700 transition"
+          >
+            📞 Fake Call
+          </button>
+        </div>
+      )}
+
+      {/* Fake Call UI */}
+      {showFakeCall && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-3xl text-center w-80 shadow-2xl">
+            <p className="text-lg text-gray-500 mb-2">📞 Incoming Call</p>
+            <p className="text-4xl font-bold text-gray-800 mb-2">Dad</p>
+            <p className="text-gray-500 mb-8">+91 8973997743</p>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => setShowFakeCall(false)}
+                className="bg-red-500 text-white px-8 py-3 rounded-full font-bold hover:bg-red-600 transition"
+              >
+                Decline
+              </button>
+              <button
+                onClick={() => setShowFakeCall(false)}
+                className="bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition"
+              >
+                Accept
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
