@@ -1,15 +1,12 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import SOSRequest
 from .serializers import SOSRequestSerializer
 
 
 @api_view(['GET'])
 def sos_list(request):
-    """
-    Police Dashboard-ku pending SOS alerts list.
-    Ithu Police page load aagumbodhu call aagum.
-    """
     alerts = SOSRequest.objects.filter(status='pending').order_by('-created_at')
     serializer = SOSRequestSerializer(alerts, many=True)
     return Response(serializer.data)
@@ -30,14 +27,24 @@ def sos_create(request):
 
 @api_view(['PATCH'])
 def resolve_sos(request, sos_id):
-    """
-    Police 'Mark Resolved' click pannumbodhu, ithu call aagum.
-    Status-ah 'resolved' ku maathum.
-    """
     try:
         sos = SOSRequest.objects.get(id=sos_id)
         sos.status = 'resolved'
         sos.save()
         return Response({'message': 'Resolved successfully'})
+    except SOSRequest.DoesNotExist:
+        return Response({'error': 'SOS not found'}, status=404)
+
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def upload_audio(request, sos_id):
+    try:
+        sos = SOSRequest.objects.get(id=sos_id)
+        if 'audio' in request.FILES:
+            sos.audio = request.FILES['audio']
+            sos.save()
+            return Response({'message': 'Audio uploaded successfully'}, status=200)
+        return Response({'error': 'No audio file'}, status=400)
     except SOSRequest.DoesNotExist:
         return Response({'error': 'SOS not found'}, status=404)

@@ -14,42 +14,53 @@ export default function Dashboard() {
 
   const handleSOS = async () => {
     setLoading(true);
-    
-    // 1. INSTANT RESPONSE: Odaney success kaattu (user-ku)
     setSuccess(true);
     setLoading(false);
 
-    // 2. Background-la API call pannu (user-ku theriyadhu)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+            const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
               lat: latitude,
               lng: longitude,
             });
-            console.log('SOS sent to backend successfully');
+
+            // Audio Record (5 seconds)
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            const audioChunks = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+              audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+              const formData = new FormData();
+              formData.append('audio', audioBlob, 'sos_audio.webm');
+
+              await axios.post(
+                `https://women-safety-backend-1-34sx.onrender.com/api/sos/${res.data.id}/upload-audio/`,
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
+              );
+
+              stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            setTimeout(() => mediaRecorder.stop(), 5000);
+
           } catch (error) {
-            console.error('Background SOS error:', error);
-            // User-ku error kaatta vendaam (already success kaattitom)
+            console.error('Audio recording error:', error);
           }
         },
         (error) => {
           console.error('Location error:', error);
-          // Location kidaikkalaina, default location (0,0) anuppu
-          axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-            lat: 0.0,
-            lng: 0.0,
-          }).catch(err => console.error('Fallback SOS error:', err));
         }
       );
-    } else {
-      // Geolocation support illa na, direct-a anuppu
-      axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-        lat: 0.0,
-        lng: 0.0,
-      }).catch(err => console.error('No-geo SOS error:', err));
     }
   };
 
@@ -105,7 +116,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Fake Call UI */}
       {showFakeCall && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-3xl text-center w-80 shadow-2xl">

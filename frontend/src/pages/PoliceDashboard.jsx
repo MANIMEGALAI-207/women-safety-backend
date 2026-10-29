@@ -15,19 +15,16 @@ export default function PoliceDashboard() {
 
   useEffect(() => {
     fetchAlerts();
-    const interval = setInterval(fetchAlerts, 5000); // 5 seconds refresh
+    const interval = setInterval(fetchAlerts, 5000);
     return () => clearInterval(interval);
   }, []);
 
   const handleResolve = (id) => {
-    // 1. INSTANT RESPONSE: Odaney alert-ah list-la irundhu remove pannu
     setAlerts(alerts.filter(a => a.id !== id));
     
-    // 2. Background-la API call pannu (database update)
     axios.patch(`https://women-safety-backend-1-34sx.onrender.com/api/sos/${id}/resolve/`)
       .catch(error => {
         console.error('Resolve error:', error);
-        // Error vandha, alert-ah thirumba list-la add pannu
         fetchAlerts();
       });
   };
@@ -49,6 +46,13 @@ export default function PoliceDashboard() {
                 📍 Location: <a href={`https://maps.google.com/?q=${alert.lat},${alert.lng}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">View on Map</a>
               </p>
               <p className="text-gray-600">⏰ Time: {new Date(alert.created_at).toLocaleTimeString()}</p>
+              
+              {alert.audio_url && (
+                <audio controls className="mt-3 w-full">
+                  <source src={alert.audio_url} type="audio/webm" />
+                </audio>
+              )}
+
               <button
                 onClick={() => handleResolve(alert.id)}
                 className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-bold"
