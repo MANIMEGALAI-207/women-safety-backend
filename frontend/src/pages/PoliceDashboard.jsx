@@ -15,20 +15,21 @@ export default function PoliceDashboard() {
 
   useEffect(() => {
     fetchAlerts();
-    const interval = setInterval(fetchAlerts, 3000);
+    const interval = setInterval(fetchAlerts, 5000); // 5 seconds refresh
     return () => clearInterval(interval);
   }, []);
 
-  const handleResolve = async (id) => {
-    console.log("Resolving ID:", id); // Check panna
-    try {
-      const res = await axios.patch(`https://women-safety-backend-1-34sx.onrender.com/api/sos/${id}/resolve/`);
-      console.log("Resolve response:", res.data);
-      fetchAlerts(); // Refresh list
-    } catch (error) {
-      console.error("Error resolving:", error);
-      alert('Failed to resolve. Check console.');
-    }
+  const handleResolve = (id) => {
+    // 1. INSTANT RESPONSE: Odaney alert-ah list-la irundhu remove pannu
+    setAlerts(alerts.filter(a => a.id !== id));
+    
+    // 2. Background-la API call pannu (database update)
+    axios.patch(`https://women-safety-backend-1-34sx.onrender.com/api/sos/${id}/resolve/`)
+      .catch(error => {
+        console.error('Resolve error:', error);
+        // Error vandha, alert-ah thirumba list-la add pannu
+        fetchAlerts();
+      });
   };
 
   return (
@@ -45,8 +46,8 @@ export default function PoliceDashboard() {
             <div key={alert.id} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
               <h2 className="text-xl font-bold text-gray-800 mb-2">🚨 {alert.user_name || 'User'}</h2>
               <p className="text-gray-600">
-  📍 Location: <a href={`https://maps.google.com/?q=${alert.lat},${alert.lng}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">View on Map</a>
-</p>
+                📍 Location: <a href={`https://maps.google.com/?q=${alert.lat},${alert.lng}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">View on Map</a>
+              </p>
               <p className="text-gray-600">⏰ Time: {new Date(alert.created_at).toLocaleTimeString()}</p>
               <button
                 onClick={() => handleResolve(alert.id)}
