@@ -17,12 +17,15 @@ def sos_list(request):
 
 @api_view(['POST'])
 def sos_create(request):
-    sos = SOSRequest.objects.create(
-        lat=request.data.get('lat', 0.0),
-        lng=request.data.get('lng', 0.0),
-        status='pending'
-    )
-    return Response({'id': sos.id, 'message': 'SOS Created'}, status=201)
+    try:
+        sos = SOSRequest.objects.create(
+            lat=request.data.get('lat', 0.0),
+            lng=request.data.get('lng', 0.0),
+            status='pending'
+        )
+        return Response({'id': sos.id, 'message': 'SOS Created'}, status=201)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
 
 @api_view(['PATCH'])

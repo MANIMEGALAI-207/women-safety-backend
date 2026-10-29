@@ -105,6 +105,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "https://women-safety-backend-chi.vercel.app",
+    "http://localhost:5173",
+]
 
 # Custom User Model
 AUTH_USER_MODEL = 'api.User'
