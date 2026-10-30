@@ -1,0 +1,8 @@
+{
+  "name": "Women Safety App",
+  "short_name": "Women Safety",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fce7f3",
+  "theme_color": "#9333ea"
+}
