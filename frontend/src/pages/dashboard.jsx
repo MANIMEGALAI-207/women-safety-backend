@@ -13,67 +13,71 @@ export default function Dashboard() {
   }, []);
 
   const handleSOS = async () => {
-    setLoading(true);
-    setSuccess(true);
-    setLoading(false);
+  setLoading(true);
+  setSuccess(true);
+  setLoading(false);
 
-    const username = localStorage.getItem('username');
-    const contacts = ['+918015047743']; // <-- Unga family number
+  const username = localStorage.getItem('username');
+  const contacts = ['+918015047743']; // Unga family number
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-            const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-              lat: latitude,
-              lng: longitude,
-              username: username,
-            });
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          
+          // 1. Backend-ku SOS anuppu
+          const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+            lat: latitude,
+            lng: longitude,
+            username: username,
+          });
 
-            // WhatsApp Message
+          // 2. Audio Record (5 seconds)
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const mediaRecorder = new MediaRecorder(stream);
+          const audioChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            // 3. Audio-a backend-ku upload pannu
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'sos_audio.webm');
+
+            await axios.post(
+              `https://women-safety-backend-1-34sx.onrender.com/api/sos/${res.data.id}/upload-audio/`,
+              formData,
+              { headers: { 'Content-Type': 'multipart/form-data' } }
+            );
+
+            stream.getTracks().forEach(track => track.stop());
+
+            // 4. Audio upload aana apparam, WhatsApp open pannu
             const message = `🚨 SOS Alert! I need help. Location: https://maps.google.com/?q=${latitude},${longitude}`;
             contacts.forEach((phone) => {
               const waLink = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(message)}`;
               window.open(waLink, '_blank');
             });
+          };
 
-            // Audio Record
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const mediaRecorder = new MediaRecorder(stream);
-            const audioChunks = [];
+          // Audio record start pannu
+          mediaRecorder.start();
+          setTimeout(() => mediaRecorder.stop(), 5000); // 5 seconds record
 
-            mediaRecorder.ondataavailable = (event) => {
-              audioChunks.push(event.data);
-            };
-
-            mediaRecorder.onstop = async () => {
-              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-              const formData = new FormData();
-              formData.append('audio', audioBlob, 'sos_audio.webm');
-
-              await axios.post(
-                `https://women-safety-backend-1-34sx.onrender.com/api/sos/${res.data.id}/upload-audio/`,
-                formData,
-                { headers: { 'Content-Type': 'multipart/form-data' } }
-              );
-
-              stream.getTracks().forEach(track => track.stop());
-            };
-
-            mediaRecorder.start();
-            setTimeout(() => mediaRecorder.stop(), 5000);
-
-          } catch (error) {
-            console.error('Audio recording error:', error);
-          }
-        },
-        (error) => {
-          console.error('Location error:', error);
+        } catch (error) {
+          console.error('Audio recording error:', error);
         }
-      );
-    }
-  };
+      },
+      (error) => {
+        console.error('Location error:', error);
+      }
+    );
+  }
+};
 
   const handleFakeCall = () => {
     setShowFakeCall(true);
