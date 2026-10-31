@@ -3,7 +3,7 @@
   "short_name": "Women Safety",
   "description": "Emergency SOS app for women safety",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#fce7f3",
   "theme_color": "#9333ea",
   "icons": [
