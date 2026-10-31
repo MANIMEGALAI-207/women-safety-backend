@@ -17,7 +17,8 @@ export default function Dashboard() {
     setSuccess(true);
     setLoading(false);
 
-    const username = localStorage.getItem('username'); // <-- Ithu add pannunga
+    const username = localStorage.getItem('username');
+    const contacts = ['+918015047743']; // <-- Unga family number
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -27,9 +28,17 @@ export default function Dashboard() {
             const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
               lat: latitude,
               lng: longitude,
-              username: username, // <-- Ithu add pannunga
+              username: username,
             });
 
+            // WhatsApp Message
+            const message = `🚨 SOS Alert! I need help. Location: https://maps.google.com/?q=${latitude},${longitude}`;
+            contacts.forEach((phone) => {
+              const waLink = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(message)}`;
+              window.open(waLink, '_blank');
+            });
+
+            // Audio Record
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const mediaRecorder = new MediaRecorder(stream);
             const audioChunks = [];
