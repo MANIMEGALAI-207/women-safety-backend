@@ -56,12 +56,7 @@ export default function Dashboard() {
 
             stream.getTracks().forEach(track => track.stop());
 
-            // 4. Audio upload aana apparam, WhatsApp open pannu
-            const message = `🚨 SOS Alert! I need help. Location: https://maps.google.com/?q=${latitude},${longitude}`;
-            contacts.forEach((phone) => {
-              const waLink = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(message)}`;
-              window.open(waLink, '_blank');
-            });
+            
           };
 
           // Audio record start pannu
