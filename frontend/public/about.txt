@@ -1,6 +1,6 @@
 This favicon was generated using the following font:
 
-- Font Title: Montserrat
+- Font Title: Poppins
 - Font Author: undefined
-- Font Source: https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Ew-Y3tcoqK5.ttf
+- Font Source: https://fonts.gstatic.com/s/poppins/v24/pxiEyp8kv8JHgFVrFJDUc1NECPY.ttf
 - Font License: undefined)
