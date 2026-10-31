@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import SOSRequest, User
 from .serializers import SOSRequestSerializer
+import requests
 
 
 @api_view(['GET'])
@@ -32,6 +33,26 @@ def sos_create(request):
             lng=request.data.get('lng', 0.0),
             status='pending'
         )
+
+        # UltraMsg WhatsApp API
+        instance_id = 'instance195825'
+        token = 'xjh2ioq07cf1otfg'
+        phone = '918015047743'  # <-- Unga family number
+        message = f"🚨 SOS Alert! I need help. Location: https://maps.google.com/?q={sos.lat},{sos.lng}"
+
+        url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
+        payload = {
+            "token": token,
+            "to": phone,
+            "body": message
+        }
+        
+        # API call (error vandhalum, SOS alert block aagaadhu)
+        try:
+            requests.post(url, data=payload, timeout=5)
+        except Exception as whatsapp_error:
+            print(f"WhatsApp error: {whatsapp_error}")
+
         return Response({'id': sos.id, 'message': 'SOS Created'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
