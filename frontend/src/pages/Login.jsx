@@ -17,7 +17,7 @@ export default function Login() {
       });
       localStorage.setItem('access_token', res.data.access);
       localStorage.setItem('username', username);
-      navigate('/'); // Home page-ku povum
+      navigate('/sos'); // <-- SOS page-ku povum
     } catch (err) {
       setError('Invalid username or password');
     }
@@ -70,7 +70,7 @@ export default function Login() {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           Emergency?{' '}
-          <button onClick={() => navigate('/')} className="text-red-500 underline font-bold">
+          <button onClick={() => navigate('/sos')} className="text-red-500 underline font-bold">
             Skip Login & Go to SOS
           </button>
         </p>
