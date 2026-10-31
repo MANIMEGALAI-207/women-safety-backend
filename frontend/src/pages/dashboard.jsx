@@ -17,6 +17,8 @@ export default function Dashboard() {
     setSuccess(true);
     setLoading(false);
 
+    const username = localStorage.getItem('username'); // <-- Ithu add pannunga
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -25,9 +27,9 @@ export default function Dashboard() {
             const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
               lat: latitude,
               lng: longitude,
+              username: username, // <-- Ithu add pannunga
             });
 
-            // Audio Record (5 seconds)
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const mediaRecorder = new MediaRecorder(stream);
             const audioChunks = [];

@@ -17,7 +17,17 @@ def sos_list(request):
 @api_view(['POST'])
 def sos_create(request):
     try:
+        username = request.data.get('username')
+        user = None
+        
+        if username:
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                pass
+        
         sos = SOSRequest.objects.create(
+            user=user,
             lat=request.data.get('lat', 0.0),
             lng=request.data.get('lng', 0.0),
             status='pending'
