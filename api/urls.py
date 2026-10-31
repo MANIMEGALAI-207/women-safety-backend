@@ -6,4 +6,6 @@ urlpatterns = [
     path('sos/create/', views.sos_create, name='sos_create'),
     path('sos/<int:sos_id>/resolve/', views.resolve_sos, name='resolve_sos'),
     path('sos/<int:sos_id>/upload-audio/', views.upload_audio, name='upload_audio'),
+    path('auth/register/', views.register_user, name='register'),
+    path('auth/login/', views.login_user, name='login'),
 ]
