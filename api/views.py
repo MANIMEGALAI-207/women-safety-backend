@@ -37,7 +37,13 @@ def sos_create(request):
         # UltraMsg WhatsApp API
         instance_id = 'instance195825'
         token = 'xjh2ioq07cf1otfg'
-        phone = '918015047743'  # <-- Unga family number
+        
+        # User-oda emergency contact number edukka
+        if user and user.emergency_contact:
+            phone = user.emergency_contact.replace('+', '')  # Relative number
+        else:
+            phone = '918015047743'  # Fallback (unga number)
+        
         message = f"🚨 SOS Alert! I need help. Location: https://maps.google.com/?q={sos.lat},{sos.lng}"
 
         url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
@@ -89,11 +95,17 @@ def register_user(request):
         username = request.data.get('username')
         email = request.data.get('email')
         password = request.data.get('password')
+        emergency_contact = request.data.get('emergency_contact', '')  # <-- Ithu add pannunga
         
         if User.objects.filter(username=username).exists():
             return Response({'error': 'Username already exists'}, status=400)
         
-        user = User.objects.create_user(username=username, email=email, password=password)
+        user = User.objects.create_user(
+            username=username, 
+            email=email, 
+            password=password,
+            emergency_contact=emergency_contact  # <-- Ithu add pannunga
+        )
         refresh = RefreshToken.for_user(user)
         
         return Response({
