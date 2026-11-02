@@ -8,6 +8,7 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [emergencyContact, setEmergencyContact] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -54,6 +55,18 @@ export default function Register() {
               required
             />
           </div>
+
+          <div>
+  <label className="block text-gray-700 font-medium mb-1">Emergency Contact Number</label>
+  <input
+    type="tel"
+    value={emergencyContact}
+    onChange={(e) => setEmergencyContact(e.target.value)}
+    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+    placeholder="+919876543210"
+    required
+  />
+</div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-1">Password</label>

@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     phone = models.CharField(max_length=15, blank=True)
+    emergency_contact = models.CharField(max_length=15, blank=True)  # <-- Ithu
     is_police = models.BooleanField(default=False)
     
     def __str__(self):
