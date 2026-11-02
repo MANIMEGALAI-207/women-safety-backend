@@ -1,0 +1,9 @@
+{
+  "appId": "com.womensafety.app",
+  "appName": "Women Safety",
+  "webDir": "dist",
+  "server": {
+    "url": "https://women-safety-backend-chi.vercel.app",
+    "cleartext": true
+  }
+}

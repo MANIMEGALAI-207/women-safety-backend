@@ -15,9 +15,9 @@ function App() {
   </Link>
   
   <Link to="/police" className="flex flex-col items-center hover:text-pink-300">
-    <span className="text-2xl">👮</span>
-    <span className="text-xs font-bold">Police</span>
-  </Link>
+  <span className="text-2xl">📋</span>
+  <span className="text-xs font-bold">My Alerts</span>
+</Link>
   
   <Link to="/safe-route" className="flex flex-col items-center hover:text-pink-300">
     <span className="text-2xl">🗺️</span>

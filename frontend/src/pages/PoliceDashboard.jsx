@@ -31,7 +31,7 @@ export default function PoliceDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-purple-700 mb-6">👮 Police Dashboard</h1>
+      <h1 className="text-3xl font-bold text-purple-700 mb-6">📋 My Alert History</h1>
       
       {alerts.length === 0 ? (
         <div className="bg-white p-8 rounded-xl shadow text-center">
