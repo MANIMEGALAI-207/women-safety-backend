@@ -7,8 +7,8 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emergencyContact, setEmergencyContact] = useState(''); // <-- Ithu venum
   const navigate = useNavigate();
-  const [emergencyContact, setEmergencyContact] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -18,6 +18,7 @@ export default function Register() {
         email,
         password,
         password2: password,
+        emergency_contact: emergencyContact, // <-- Ithu add pannunga
       });
       alert('Registration successful! Please login.');
       navigate('/login');
@@ -57,16 +58,16 @@ export default function Register() {
           </div>
 
           <div>
-  <label className="block text-gray-700 font-medium mb-1">Emergency Contact Number</label>
-  <input
-    type="tel"
-    value={emergencyContact}
-    onChange={(e) => setEmergencyContact(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-    placeholder="+919876543210"
-    required
-  />
-</div>
+            <label className="block text-gray-700 font-medium mb-1">Emergency Contact Number</label>
+            <input
+              type="tel"
+              value={emergencyContact}
+              onChange={(e) => setEmergencyContact(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              placeholder="+919876543210"
+              required
+            />
+          </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-1">Password</label>
