@@ -108,7 +108,9 @@ export default function Dashboard() {
     // 💡 font-['Poppins'] class-a main div-la add panniruken
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6 relative font-['Poppins']">
       <h1 className="text-4xl font-bold text-purple-700 mb-2">🚨 Women Safety</h1>
-      <p className="text-gray-600 mb-8">Press the SOS button in case of emergency</p>
+      <p className="text-gray-600 mb-8 whitespace-nowrap text-sm sm:text-base">
+  Press the SOS button in case of emergency
+</p>
       
       {success ? (
         <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md">
