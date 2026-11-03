@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // 💡 useEffect add panniruken
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,8 +7,16 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [emergencyContact, setEmergencyContact] = useState(''); // <-- Ithu venum
+  const [emergencyContact, setEmergencyContact] = useState(''); 
   const navigate = useNavigate();
+
+  // 💡 Font Load Panna Code
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -18,7 +26,7 @@ export default function Register() {
         email,
         password,
         password2: password,
-        emergency_contact: emergencyContact, // <-- Ithu add pannunga
+        emergency_contact: emergencyContact,
       });
       alert('Registration successful! Please login.');
       navigate('/login');
@@ -28,7 +36,8 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center p-6">
+    // 💡 Main div-la font-['Poppins'] class add panniruken
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center p-6 font-['Poppins']">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h1 className="text-3xl font-bold text-purple-700 text-center mb-6">Register</h1>
 
@@ -41,7 +50,7 @@ export default function Register() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
@@ -52,7 +61,7 @@ export default function Register() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
@@ -63,7 +72,7 @@ export default function Register() {
               type="tel"
               value={emergencyContact}
               onChange={(e) => setEmergencyContact(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="+919876543210"
               required
             />
@@ -75,14 +84,14 @@ export default function Register() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-2 rounded-lg font-bold hover:bg-purple-700"
+            className="w-full bg-purple-600 text-white py-2 rounded-lg font-bold hover:bg-purple-700 transition"
           >
             Register
           </button>

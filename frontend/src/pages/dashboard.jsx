@@ -7,72 +7,79 @@ export default function Dashboard() {
   const [showFakeCall, setShowFakeCall] = useState(false);
   const audioRef = useRef(null);
 
+  // 💡 Font Add Panna Code (Poppins font-a load pandrom)
+  useEffect(() => {
+    // Google Fonts link-a dynamically add pandrom
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
   useEffect(() => {
     audioRef.current = new Audio('/universfield-ringtone-091-496417.mp3');
     audioRef.current.loop = true;
   }, []);
 
   const handleSOS = async () => {
-  setLoading(true);
-  setSuccess(true);
-  setLoading(false);
+    setLoading(true);
+    setSuccess(true);
+    setLoading(false);
 
-  const username = localStorage.getItem('username');
-  const contacts = ['+918015047743']; // Unga family number
+    const username = localStorage.getItem('username');
+    const contacts = ['+918015047743']; // Unga family number
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          
-          // 1. Backend-ku SOS anuppu
-          const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
-            lat: latitude,
-            lng: longitude,
-            username: username,
-          });
-
-          // 2. Audio Record (5 seconds)
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          const mediaRecorder = new MediaRecorder(stream);
-          const audioChunks = [];
-
-          mediaRecorder.ondataavailable = (event) => {
-            audioChunks.push(event.data);
-          };
-
-          mediaRecorder.onstop = async () => {
-            // 3. Audio-a backend-ku upload pannu
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append('audio', audioBlob, 'sos_audio.webm');
-
-            await axios.post(
-              `https://women-safety-backend-1-34sx.onrender.com/api/sos/${res.data.id}/upload-audio/`,
-              formData,
-              { headers: { 'Content-Type': 'multipart/form-data' } }
-            );
-
-            stream.getTracks().forEach(track => track.stop());
-
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
             
-          };
+            // 1. Backend-ku SOS anuppu
+            const res = await axios.post('https://women-safety-backend-1-34sx.onrender.com/api/sos/create/', {
+              lat: latitude,
+              lng: longitude,
+              username: username,
+            });
 
-          // Audio record start pannu
-          mediaRecorder.start();
-          setTimeout(() => mediaRecorder.stop(), 5000); // 5 seconds record
+            // 2. Audio Record (5 seconds)
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            const audioChunks = [];
 
-        } catch (error) {
-          console.error('Audio recording error:', error);
+            mediaRecorder.ondataavailable = (event) => {
+              audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+              // 3. Audio-a backend-ku upload pannu
+              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+              const formData = new FormData();
+              formData.append('audio', audioBlob, 'sos_audio.webm');
+
+              await axios.post(
+                `https://women-safety-backend-1-34sx.onrender.com/api/sos/${res.data.id}/upload-audio/`,
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
+              );
+
+              stream.getTracks().forEach(track => track.stop());
+            };
+
+            // Audio record start pannu
+            mediaRecorder.start();
+            setTimeout(() => mediaRecorder.stop(), 5000); // 5 seconds record
+
+          } catch (error) {
+            console.error('Audio recording error:', error);
+          }
+        },
+        (error) => {
+          console.error('Location error:', error);
         }
-      },
-      (error) => {
-        console.error('Location error:', error);
-      }
-    );
-  }
-};
+      );
+    }
+  };
 
   const handleFakeCall = () => {
     setShowFakeCall(true);
@@ -98,7 +105,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6 relative">
+    // 💡 font-['Poppins'] class-a main div-la add panniruken
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 flex flex-col items-center justify-center p-6 relative font-['Poppins']">
       <h1 className="text-4xl font-bold text-purple-700 mb-2">🚨 Women Safety</h1>
       <p className="text-gray-600 mb-8">Press the SOS button in case of emergency</p>
       

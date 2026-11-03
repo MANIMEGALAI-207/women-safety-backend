@@ -8,22 +8,23 @@ import SafeRoute from './pages/SafeRoute';
 function App() {
   return (
     <BrowserRouter>
-      <nav className="bg-purple-600 text-white p-3 flex justify-around items-center shadow-lg">
-  <Link to="/sos" className="flex flex-col items-center hover:text-pink-300">
-    <span className="text-2xl">🚨</span>
-    <span className="text-xs font-bold">SOS</span>
-  </Link>
-  
-  <Link to="/police" className="flex flex-col items-center hover:text-pink-300">
-  <span className="text-2xl">📋</span>
-  <span className="text-xs font-bold">My Alerts</span>
-</Link>
-  
-  <Link to="/safe-route" className="flex flex-col items-center hover:text-pink-300">
-    <span className="text-2xl">🗺️</span>
-    <span className="text-xs font-bold">Safe Route</span>
-  </Link>
-</nav>
+      {/* 💡 Navbar-ku font-['Poppins'] class add panniruken */}
+      <nav className="bg-purple-600 text-white p-3 flex justify-around items-center shadow-lg font-['Poppins']">
+        <Link to="/sos" className="flex flex-col items-center hover:text-pink-300 transition">
+          <span className="text-2xl">🚨</span>
+          <span className="text-xs font-bold">SOS</span>
+        </Link>
+        
+        <Link to="/police" className="flex flex-col items-center hover:text-pink-300 transition">
+          <span className="text-2xl">📋</span>
+          <span className="text-xs font-bold">My Alerts</span>
+        </Link>
+        
+        <Link to="/safe-route" className="flex flex-col items-center hover:text-pink-300 transition">
+          <span className="text-2xl">🗺️</span>
+          <span className="text-xs font-bold">Safe Route</span>
+        </Link>
+      </nav>
 
       <Routes>
         {/* Home route -> Login page */}

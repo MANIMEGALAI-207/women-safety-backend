@@ -4,6 +4,14 @@ import axios from 'axios';
 export default function PoliceDashboard() {
   const [alerts, setAlerts] = useState([]);
 
+  // 💡 Font Load Panna Code
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
   const fetchAlerts = async () => {
     try {
       const res = await axios.get('https://women-safety-backend-1-34sx.onrender.com/api/sos/list/');
@@ -30,7 +38,8 @@ export default function PoliceDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    // 💡 Main div-la font-['Poppins'] class add panniruken
+    <div className="min-h-screen bg-gray-100 p-6 font-['Poppins']">
       <h1 className="text-3xl font-bold text-purple-700 mb-6">📋 My Alert History</h1>
       
       {alerts.length === 0 ? (
@@ -55,7 +64,7 @@ export default function PoliceDashboard() {
 
               <button
                 onClick={() => handleResolve(alert.id)}
-                className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-bold"
+                className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-bold transition"
               >
                 ✓ Mark Resolved
               </button>

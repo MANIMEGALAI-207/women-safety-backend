@@ -17,6 +17,14 @@ export default function SafeRoute() {
   const [route, setRoute] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // 💡 Font Load Panna Code
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -71,7 +79,8 @@ export default function SafeRoute() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    // 💡 Main div-la font-['Poppins'] class add panniruken
+    <div className="min-h-screen bg-gray-100 p-6 font-['Poppins']">
       <h1 className="text-3xl font-bold text-purple-700 mb-6">🗺️ Safe Route</h1>
 
       <div className="bg-white p-6 rounded-xl shadow mb-6">
@@ -81,17 +90,18 @@ export default function SafeRoute() {
           placeholder="e.g., Coimbatore Bus Stand"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           onClick={handleFindRoute}
           disabled={loading}
-          className="bg-purple-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-purple-700 disabled:opacity-50"
+          className="bg-purple-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-purple-700 transition disabled:opacity-50"
         >
           {loading ? 'Finding...' : '🛡️ Find Safe Route'}
         </button>
       </div>
 
+      {/* 💡 Map-ku ulla font affect aagakoodathu, adhanaala map-a velila vachiruken */}
       <div className="h-[500px] rounded-xl overflow-hidden shadow-lg">
         <MapContainer center={currentLocation} zoom={13} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

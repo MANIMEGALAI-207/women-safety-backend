@@ -1,3 +1,11 @@
+/* 💡 Google Fonts import */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* 💡 Ellathukum apply aaga body-la font set pandrom */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;
