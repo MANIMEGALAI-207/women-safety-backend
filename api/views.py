@@ -34,13 +34,16 @@ def sos_create(request):
             status='pending'
         )
 
-        # UltraMsg WhatsApp API
+        # UltraMsg WhatsApp API Details
         instance_id = 'instance195825'
         token = 'xjh2ioq07cf1otfg'
         
         # User-oda emergency contact number edukka
         if user and user.emergency_contact:
-            phone = user.emergency_contact.replace('+', '')  # Relative number
+            # 💡 Number-la irundhu +, space, -, brackets ellathayum remove pandrom
+            phone = ''.join(filter(str.isdigit, user.emergency_contact))
+            if len(phone) == 10: # Oruvelai 10 digit mattum irundha, India code 91 add pandrom
+                phone = '91' + phone
         else:
             phone = '918015047743'  # Fallback (unga number)
         
@@ -53,11 +56,14 @@ def sos_create(request):
             "body": message
         }
         
-        # API call (error vandhalum, SOS alert block aagaadhu)
+        # 💡 API call panni, response-a logs-la print pandrom (Error kandupidikka)
         try:
-            requests.post(url, data=payload, timeout=5)
+            print(f"--- Trying to send WhatsApp to: {phone} ---")
+            response = requests.post(url, data=payload, timeout=10)
+            print("WhatsApp API Status Code:", response.status_code)
+            print("WhatsApp API Response:", response.text) 
         except Exception as whatsapp_error:
-            print(f"WhatsApp error: {whatsapp_error}")
+            print(f"WhatsApp API Error Exception: {whatsapp_error}")
 
         return Response({'id': sos.id, 'message': 'SOS Created'}, status=201)
     except Exception as e:
@@ -95,7 +101,7 @@ def register_user(request):
         username = request.data.get('username')
         email = request.data.get('email')
         password = request.data.get('password')
-        emergency_contact = request.data.get('emergency_contact', '')  # <-- Ithu add pannunga
+        emergency_contact = request.data.get('emergency_contact', '')
         
         if User.objects.filter(username=username).exists():
             return Response({'error': 'Username already exists'}, status=400)
@@ -104,7 +110,7 @@ def register_user(request):
             username=username, 
             email=email, 
             password=password,
-            emergency_contact=emergency_contact  # <-- Ithu add pannunga
+            emergency_contact=emergency_contact
         )
         refresh = RefreshToken.for_user(user)
         
